@@ -1,0 +1,83 @@
+Outline for vertex algebras in Lean
+
+Introduce power series in a module M (over a rig R), allow multiple variables, allow shifts by multiplying powers of variables (i.e., allow Laurent polynomial action).  More generally, formal power series M[[S]] in a module M with exponents in a set S should just be maps from S to M.  
+
+Look at Lean4 mathlib files.  Start with S arbitrary type, [Zero M] then [ZeroMul M], [AddCommMonoid M], [Module R M].  Then use instances to show that FormalSeriesModule inherits those structures. 
+
+Given an action of an additive monoid G on S, we have an action of the monoid ring of finitely supported maps from G to R.  Note: the coefficients are given by the sum in the formula (a.m)_k = \sum_{ij=k} a_i m_j, and if ij=k for fixed i and infinitely many j, this is infinite!!!  To fix this, we require that for each k \in S, act^{-1}(k) of G \times S has finite fibers over G.  See implementations of Algebra/Lie and Algebra/MonoidAlgebra.
+
+Laurent power series - We consider the case where G and S are compatibly ordered. (I think this just means g < h implies g+s < h+s.)  In this case, we define a Laurent series to be a formal series whose support is bounded below in each G-congruence class.  We show that Laurent series are closed under the monoid algebra action.
+
+Two maps M \to M[[S]] and M \to M[[T]] compose to form maps M \to M[[S \times T]] and M \to M[[T \times S]] by substitution of coefficients.
+
+Specialize to the case S = Z, maybe do something with a variable.
+
+Say something about different expansions of m(x-y)^{-n} in M((x))((y)) and M((y))((x)), and how the difference is annihilated by (x-y)^n.
+
+Field with variable z: R-module map from M to M((z)) [Li calls this a weak vertex operator].
+Define identity field.  More generally, allow things that look like intertwining operators.  Allow operations like taking the y^n coefficient of an element of M[[x,y]][x^{-1}][\log x] as an element of M((x))[\log x] - use preimage of projection to y-exponent set.
+
+Operations: Addition, taking z^n term, shifting, divided power derivatives,
+composition with fields in different variables, residue products
+
+Define algebra of not-necessarily local fields.  Problem: without locality, the power series made of residue products is not necessarily a field.  What is Kac's definition of field algebra?  Just Y(u_n v,z) = Y(u,z)_n Y(v,z).
+
+Theorem \partial^{(k)}A(z)_n B(z) = (-1)^k\binom{n}{k}A(z)_{n-k}B(z)
+
+Theorem \partial^{(k)}(A(z)_nB(z)) = \sum \partial^{(i)}A(z)_n\partial^{(k-i)}B(z)
+
+Prop: A(z)_nI(z) = \partial^{(-n-1)}A(z) for n < 0 and 0 for n \geq 0.  I(z)_nA(z) = \delta_{n,-1}A(z).
+
+Locality: There is some n \geq 0 such that
+\sum \binom{n}{2i} z^{2i} w^{n-2i} A(z)B(w) = \sum \binom{n}{2i+1} z^{2i+1} w^{n-2i-1} B(w)A(z).
+If we allow -1, then make a map "multiplication by z-w", and consider its "eventual kernel".
+
+Operator product expansion.
+
+Cauchy-Jacobi identity - is there a proof by multi-index induction?
+
+Borcherds identity for residue products
+
+Vertex rng, non-unital vertex alg : What axiomatizations are equivalent?  Just locality + assoc -> can we get Jacobi?
+
+Equivalent definitions of vertex algebra: Jacobi, locality + assoc, locality + translation, locality + weak assoc, weak assoc + skew, assoc + commutator, locality
+
+Creativity with respect to a vector - preserved under residue products.
+
+Basic properties with identity, Hasse-Schmidt derivations.
+Goddard's uniqueness. 
+Explicit expansion of a_r b_s c and (a_r b)_s c (from Lepowsky-Li).
+
+Reconstruction theorem.
+
+Commutative rings with derivation are the same as commutative vertex algebras.  Manipulations with center and idempotents.  Commutants are vertex subalgebras.
+
+Lie algebra structure on V_1/TV_0, special: tensoring with C[z,z^{-1}] to get Lie algebra of coefficients.  Enveloping topological associative algebra.
+
+Heisenberg, Lattice, Affine.
+
+Virasoro, conformal structure, Segal-Sugawara.
+
+Vertex superalgebras, free fermions.  Conway moonshine?  Boson-Fermion correspondence?
+
+Cofiniteness conditions.  PBW-type bases.
+
+Modules, intertwining operators, abelian intertwining algebra?
+
+Moonshine module (use triality to avoid some twisted operator manipulations - probably can't avoid all when defining multiplication), finiteness and simplicity of monster, no-ghost theorem, monster Lie algebra, complete replicability.
+
+Ising, Miyamoto involutions.
+
+Complex-analytic properties - differential equations following Huang and Miyamoto, associativity of C_1 fusion, Modularity following Zhu, DLM, Pseudo-trace properties of Miyamoto.
+
+Hauptmodul criteria, monstrous moonshine, generalized moonshine.
+
+Conformal blocks in genus zero - identification with intertwining operators following Zhu and Arike.
+
+Conformal blocks in higher genus - analysis following damiolini-gibney-tarasca
+
+Verlinde formula, Modular tensor structure, regularity of fixed points, cyclic orbifolds.
+
+Self-dual integral form of moonshine.
+
+W-algebras?  Geometric Langlands questions?

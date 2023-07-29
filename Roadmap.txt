@@ -16,6 +16,12 @@ Pass between End(V)[[z^{\pm 1}]] + bounded-below condition and Hom(V, V((z))), a
 Composition of fields: Need a common space for comparing A(z)B(w) and B(w)A(z)
 Residue products (do we need this for non-integral values?)
 
+Cautions:
+log series don't play well with divided power derivatives when ℚ is not contained in the coefficient ring, e.g., \partial^{(2)} (x^a log x) gets a 2 in the denominator.
+This has not been a problem so far, since no one has worked with log intertwining operators over rings other than ℂ.
+It might be interesting to see what kind of non-semisimple fusion structures exist over finite fields, but
+maybe Lean is not the first place to try.
+
 Part II: Suggestions (may need work)
 
 Given an action of an additive monoid G on S, we have an action of the monoid ring of finitely supported maps from G to R.  Note: the coefficients are given by the sum in the formula (a.m)_k = \sum_{ij=k} a_i m_j, and if ij=k for fixed i and infinitely many j, this is infinite!!!  To fix this, we require that for each k \in S, act^{-1}(k) of G \times S has finite fibers over G.  See implementations of Algebra/Lie and Algebra/MonoidAlgebra.

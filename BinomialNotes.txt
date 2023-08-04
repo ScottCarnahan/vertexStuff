@@ -5,7 +5,7 @@ Binomial rings are torsion-free commutative rings R such that for any x ∈ R an
 The torsion-free condition implies multiplication by k! is injective, so we define `choose x k` to be the unique y such that y*k! = x(x-1)⋯(x-k+1).
 
 We can generalize this to the following condition on semirings: multiplication by positive integers is injective, and k! | x(x+1)⋯(x+k-1) for all x and k.
-This lets us generalize the definition of multichoose to any semiring.  Over Nat, multichoose n k = choose (n+k-1) k.
+This lets us generalize the definition of multichoose to suitable semirings.  Over Nat, multichoose n k = choose (n+k-1) k.
 
 Part II, Theorems about binomial coefficients we need for vertex algebras:
 
@@ -15,7 +15,7 @@ Part II, Theorems about binomial coefficients we need for vertex algebras:
    I would prefer to write x.choose (n+k) * (n+k).choose k = x.choose n * (x-n).choose k
    so we know which terms need to be non-negative.
 3. (-1)^k x.choose k = (k-x-1).choose k
-4. Vandermonde convolution: (x+y).choose k = (finset.range (k+1)).sum (λ (i:ℕ), x.choose i * y.choose (k-i)
+4. Vandermonde convolution: (x+y).choose k = (finset.range (k+1)).sum (λ (i:ℕ), x.choose i * y.choose (k-i))
 
 Theorems about series we need:
 1. Expansions of (x-y)^(-N) when |x| < |y| and |y| < |x|
@@ -40,7 +40,7 @@ Then, introduce descending factorials Ring.descFactorial r k, for r in a ring R.
 Compare with ascFactorial, compare descFactorial r k with descFactorial (k-r-1) k, prove descFactorial_mul.
 descFactorial vanderMonde : dF (x+y) n = \sum (choose n k) (dF x k) (dF y (n-k)) := induction on n using Pascal and a sum reindex.
 
-Introduce binomial coefficients Ring.choose r k.  compare with Nat.choose and Ring.multichoose.
+Introduce binomial coefficients Ring.choose r k.  Compare with Nat.choose and Ring.multichoose.
 Compare Ring.choose r k with Ring.choose (k-r-1) k, prove Ring.choose_mul.
 Here is a silly proof of Ring.vanderMonde: For each k, it suffices to prove a polynomial identity for the universal binomial ring on x and y, and it holds for the Zariski dense set of inputs coming from x and y in Nat.
 

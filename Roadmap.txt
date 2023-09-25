@@ -15,6 +15,7 @@ Pass between End(V)[[z^{\pm 1}]] + bounded-below condition and Hom(V, V((z))), a
   (I guess currying is more or less automatic in Lean? Intertwining operators can be types of the form U \to V \to W{z} )
 Composition of fields: Need a common space for comparing A(z)B(w) and B(w)A(z)
 Residue products (do we need this for non-integral values?)
+Some proofs that locality + derivative rule imply Borcherds use Laurent expansions of rational functions in 3 variables.
 
 Cautions:
 log series don't play well with divided power derivatives when ℚ is not contained in the coefficient ring, e.g., \partial^{(2)} (x^a log x) gets a 2 in the denominator.
@@ -24,16 +25,16 @@ maybe Lean is not the first place to try.
 
 Part II: Suggestions (may need work)
 
-Given an action of an additive monoid G on S, we have an action of the monoid ring of finitely supported maps from G to R.  Note: the coefficients are given by the sum in the formula (a.m)_k = \sum_{ij=k} a_i m_j, and if ij=k for fixed i and infinitely many j, this is infinite!!!  To fix this, we require that for each k \in S, act^{-1}(k) of G \times S has finite fibers over G.  See implementations of Algebra/Lie and Algebra/MonoidAlgebra.
+Given an action of an additive monoid G on S, we have an action of the monoid ring of finitely supported maps from G to R.  Note: the coefficients are given by the sum in the formula (a.m)_k = \sum_{ij=k} a_i m_j, and if ij=k for fixed i and infinitely many j, this is infinite!!!  To fix this, we require that for each k \in S, act^{-1}(k) of G \times S has finite fibers over G.  See implementations of Algebra/Lie and Algebra/MonoidAlgebra.  (This may be too general)
 
-Laurent power series - We consider the case where G and S are compatibly ordered. (I think this just means g < h implies g+s < h+s.)  In this case, we define a Laurent series to be a formal series whose support is bounded below in each G-congruence class.  We show that Laurent series are closed under the monoid algebra action.
+Laurent power series - We consider the case where G and S are compatibly ordered. (I think this just means g < h implies g+s < h+s.)  In this case, we define a Laurent series to be a formal series whose support is bounded below in each G-congruence class.  We show that Laurent series are closed under the monoid algebra action.  (We only need ((x^{1/n})) in most cases.)
 
 Say something about different expansions of m(x-y)^{-n} in M((x))((y)) and M((y))((x)), and how the difference is annihilated by (x-y)^n.
 
 Part III: Field calculus
 
 Field with variable z: R-module map from M to M((z)) [Li calls this a weak vertex operator].
-More generally, allow things that look like intertwining operators.
+More generally, allow things that look like intertwining operators (heterogeneous fields).
 Define identity field I(z).  
 
 -- Define algebra of not-necessarily local fields.  Problem: without locality, the power series made of residue products is not necessarily a field.  What is Kac's definition of field algebra?  Just Y(u_n v,z) = Y(u,z)_n Y(v,z).
@@ -49,9 +50,9 @@ Make a map "multiplication by z-w", and consider its "eventual kernel".
 
 Operator product expansion.
 
-Cauchy-Jacobi identity - is there a proof by multi-index induction?
+Cauchy-Jacobi identity - proof in Matsuo-Nagatomo uses expansions of rational functions.  Is there a proof by multi-index induction?
 
-Borcherds identity for residue products
+Borcherds identity for residue products - follows from Cauchy-Jacobi.
 
 Vertex rng, non-unital vertex alg : What axiomatizations are equivalent?  Just locality + assoc -> can we get Jacobi?
 
@@ -71,11 +72,11 @@ Commutative rings with derivation are the same as commutative vertex algebras.  
 
 Lie algebra structure on V_1/TV_0, special: tensoring with C[z,z^{-1}] to get Lie algebra of coefficients.  Enveloping topological associative algebra.
 
-Heisenberg, Lattice, Affine.
+Standard examples: Heisenberg, Lattice, Affine - this needs a treatment of induced modules and basic fields from Lie algebras.  Lattices need a theory of double covers, and possibly intertwining operators (do we want a construction of simple current extensions?)
 
 Virasoro, conformal structure, Segal-Sugawara.
 
-Vertex superalgebras, free fermions.  Conway moonshine?  Boson-Fermion correspondence?
+Vertex superalgebras, free fermions (first: super vector spaces and super modules).  Conway moonshine?  Boson-Fermion correspondence?
 
 Cofiniteness conditions.  PBW-type bases.
 

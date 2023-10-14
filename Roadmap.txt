@@ -33,8 +33,21 @@ Say something about different expansions of m(x-y)^{-n} in M((x))((y)) and M((y)
 
 Part III: Field calculus
 
-Field with variable z: R-module map from M to M((z)) [Li calls this a weak vertex operator].
+Field with variable z: R-module map from M to M((z)) [Li calls this a weak vertex operator].  This is currently implemented as
+
+structure FieldSeries : [Semiring R] [AddCommMonoid V] [Module R V] where
+  coef: ℤ → Module.End R V
+  truncation : ∀ v, ∃ N, ∀ n, N ≤ n → coef n v = 0.
+
+FieldSeries coerces to (a.coef n v) : V and seems to work well.
+
+Things that are done:
+* R-module structure on FieldSeries
+* n-th products are (mostly) defined - need add and smul.
+* n-th products are fields (done)
+
 More generally, allow things that look like intertwining operators (heterogeneous fields).
+
 Define identity field I(z).  
 
 -- Define algebra of not-necessarily local fields.  Problem: without locality, the power series made of residue products is not necessarily a field.  What is Kac's definition of field algebra?  Just Y(u_n v,z) = Y(u,z)_n Y(v,z).
@@ -54,25 +67,31 @@ Cauchy-Jacobi identity - proof in Matsuo-Nagatomo uses expansions of rational fu
 
 Borcherds identity for residue products - follows from Cauchy-Jacobi.
 
-Vertex rng, non-unital vertex alg : What axiomatizations are equivalent?  Just locality + assoc -> can we get Jacobi?
+Vertex rng, non-unital vertex alg : Borcherds equivalent to (locality or commutator formula) and (associativity or weak associativity)
 
-Equivalent definitions of vertex algebra: Jacobi, locality + assoc, locality + translation, locality + weak assoc, weak assoc + skew, assoc + commutator
+Creativity with respect to a vector: A(z) vac has no singular part - preserved under residue products.
 
-Creativity with respect to a vector - preserved under residue products. (Lian-Zuckerman axiomatization)
+Vertex algebra: All Y(u,z) are creative with respect to vac.
+
+Basic properties with identity, Hasse-Schmidt derivations, translation-equivariance Y(T^(i)u,z) = \partial^{(i)}Y(u,z).
+
+translation-covariance exp(yT)A(z)exp(-yT) = A(y+z) - preserved under residue products
+
+Can replace locality or commutator with skew-symmetry.  Goddard's axiomatization (local + translation-covariance), Lian-Zuckerman axiomatization.
 
 Part IV: Wish list - results I'd like to see
 
-Basic properties with identity, Hasse-Schmidt derivations.
-Goddard's uniqueness. 
-Explicit expansion of a_r b_s c and (a_r b)_s c (from Lepowsky-Li).
+Goddard's uniqueness.
 
-Reconstruction theorem.
+Explicit expansion of a_r b_s c (from Lepowsky-Li).
+
+Reconstruction theorem - follows from Goddard.
 
 Commutative rings with derivation are the same as commutative vertex algebras.  Manipulations with center and idempotents.  Commutants are vertex subalgebras.
 
 Lie algebra structure on V_1/TV_0, special: tensoring with C[z,z^{-1}] to get Lie algebra of coefficients.  Enveloping topological associative algebra.
 
-Standard examples: Heisenberg, Lattice, Affine - this needs a treatment of induced modules and basic fields from Lie algebras.  Lattices need a theory of double covers, and possibly intertwining operators (do we want a construction of simple current extensions?)
+Standard examples: Heisenberg, Lattice, Affine - Heisenberg and affine need a treatment of fields from loop Lie algebras and induced modules.  Lattices need a theory of double covers, and possibly intertwining operators (do we want a construction of simple current extensions?)
 
 Virasoro, conformal structure, Segal-Sugawara.
 
@@ -81,6 +100,8 @@ Vertex superalgebras, free fermions (first: super vector spaces and super module
 Cofiniteness conditions.  PBW-type bases.
 
 Modules, intertwining operators, abelian intertwining algebra?
+
+Preparation for moonshine: A_1^{24} Niemeier lattice (uses Golay code), Leech lattice, (simplicity of Co_1 needs Frattini argument and analysis of norm 8 frames).  Distinguished S_4 action on N(A_1^{24}) vertex algebra.
 
 Moonshine module (use triality to avoid some twisted operator manipulations - probably can't avoid all when defining multiplication), finiteness and simplicity of monster, no-ghost theorem, monster Lie algebra, complete replicability.
 

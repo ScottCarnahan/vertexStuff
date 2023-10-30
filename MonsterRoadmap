@@ -5,14 +5,28 @@ Group theory roadmap for monster (may be out of date)
 import Mathlib.GroupTheory.GroupAction.Defs -- has class MulAction.IsPretransitive where exists_smul_eq (type may be empty)
 import Mathlib.GroupTheory.GroupAction.Basic -- orbit relations
 import Mathlib.GroupTheory.GroupAction.FixingSubgroup -- in the presence of `MulAction M α` (with `Group M`) it is the `Subgroup M` consisting of elements which fix `s : Set α` pointwise.
+import Mathlib.GroupTheory.Subgroup.Actions -- get action of subgroup, and faithful if original action is faithful.
 
 variable (G : Type u) {α : Type v} [Group G] [MulAction G α]
 
-define action of FixingSubgroup x on the complement.
+Define action of FixingSubgroup x on the complement.
 
 class MulAction.IsMultiplyTransitive 
 Any action is 0-transitive.
-An action on nonempty \alpha is (n+1)-transitive if it is transitive and for any x : \alpha, the action of FixingSubgroup x on the complement x^c is n-transitive.
+An action on \alpha is (n+1)-transitive if it is transitive (in particular Nonempty \alpha) and for any x : \alpha, the action of FixingSubgroup x on the complement x^c is n-transitive.
+
+Def: Let G act on a set S.  A set of blocks is a partition of S that is preserved by G.  That is, a G-invariant equivalence relation.
+
+Def: An action of G on S is primitive if there is no nontrivial set of blocks (i.e., other than the single block S and the partition into singletons).
+
+Theorem: An action is primitive iff it is transitive and the stabilizer of an element is maximal.
+
+Proof: Given a transitive action, we get a bijection between elements and cosets.  Any intermediate subgroup yields nontrivial blocks via coset decomposition.
+Conversely, any nontrivial block containing the element has stabilizer given by an intermediate subgroup.
+
+Lemma: Any 2-transitive action is primitive.
+
+Proof: If 2 elements are equivalent, then all elements are equivalent.
 
 Lemma: Let G act transitively on a set S. If H is normal in G, then the transitivity classes of the action, restricted to H, form a set of blocks for the action of G.
 
@@ -37,11 +51,85 @@ Proof: From the previous theorem, H is identified with S, and the doubly-transit
 For part 2, if p > 2, then for any x \mapsto y, we must have 2x \mapsto 2y, contradicting double-transitivity on H\{0}. (note: if |S| = 3, we have G = S_3, K = S_2, H = A_3).
 For part 3, GL_n(F_2) is not triply transitive on nonzero elements of F_2^n\{0} when n > 2, because it preserves planes. (if |S| = 4, we have G = S_4, K = S_3, H = V_4)
 
-Corollary: Mathieu groups M_n are simple, for n = 21,22,23,24.
-
-Proof: M_{21} = PSL_3(F_4).  The other M_n have M_{n-1} as point stabilizer and a triply transitive action on n elements.  Index is not a power of 2.
+--- Other files
 
 Corollary: A_n is simple for n \geq 5.
 
 Proof: A_5 is simple.  All other A_n are (n-4)-transitive on n elements, with point stabilizer A_{n-1}.
+
+Theorem: If G acts faithfully on n elements, and is n-transitive, then G is S_n.
+
+Proof: If G is n-transitive, we get a surjection to S_n, and faithfulness means it is injective.
+
+Theorem: If G acts faithfully on n elements and is (n-2)-transitive, then G is S_n or A_n.
+
+Proof: Restricting to n-2 elements, we see that G contains S_{n-2}.  G is faithful, so it lies in S_n.  The order of G is a multiple of n(n-1)...3 = n!/2.
+Intersection with A_n is index at most 2, and A_n has no index 2 subgroups ever.
+
+2. Mathieu groups
+
+Corollary: Mathieu groups M_n are simple, for n = 21,22,23,24.
+
+Proof: M_{21} = PSL_3(F_4), which is simple.  The other M_n have M_{n-1} as point stabilizer and a doubly transitive action on n elements.  Index is not a prime power.
+
+Aschbacher's construction: build a tower of Steiner systems S(21,5,2) < S(22,6,3) < S(23,7,4) < S(24,8,5).
+A Steiner S(v,k,t) system is a pair (X,B), where X is a set of size v, and B is a collection of subsets of X, each of size k, such that for any size t subset Y of
+X, there is a unique element of B containing Y.
+Projective planes of order q are Steiner S(q^2+q+1,q+1,2) systems, where B is the set of lines.
+From action of M_{24} on octads, get 11-dimensional representations over F_2: Golay code module and Tood code module.
+Given a Steiner S(v,k,t) system (X,B) and a vertex x \in X, the residual Steiner system of (X,B) at x is (X-x, B(x)), where elements of B(x) are Y-x for x \in Y \in B.
+If t \geq 2, then we get S(v-1,k-1,t-1).
+Conversely, an extension of a Steiner S(v,k,t) system (X,B) is a Steiner S(v+1,k+1,t+1)-system (Z,A) such that (X,B) is the residual Steiner system at z, {z} = Z\X.
+Given a Steiner S(v,k,t)-system, a subset I of X is independent if no (t+1)-subset of I is contained in a block of B.  E.g., for projctive planes, these are subsets with no collinear triples.
+We write I_m(X) for the set of all independent subsets of size m.
+An extension subset of X is a subset C of I_{k+1} such that each element of I_{t+1} is contained in a unique element of C.
+
+Lemma: Let t > 1, X a Steiner S(v,k,t)-system, x \in X, and C(x) the set of blocks not containing x, and Y the residual Steiner system of X at x.  Then,
+C(x) is an extension subset of Y.
+
+Lemma: Let (X,B) be a Steiner S(v,k,t)-system, and C an extension subset of X.  Then:
+  1. There is an extension Z of X such that C is the extension subset induced by C(z) for {z} = Z\X.
+  2. Restriction to X identifies Aut(Z)_z with N(Aut X)(C).
+
+Proof: The blocks of Z are elements of C and the unions of z with blocks of B.
+
+We identify Aut(Z)_z with N_{Aut X}(C(z)).
+
+***Extension hypothesis***
+
+to appear
+
+3. Golay 24-code. (Conway-Sloane p277)
+
+shortest construction: Let \Omega = P^1(23).  Take Q = all squares mod 23, and consider all transformations under PGL_2(23).
+These span an F_2-subspace of P(\Omega), called the Golay code.
+
+Generators of M_{24}:
+\alpha: x \mapsto x+1.  (\infty) (0, 1, \ldots, 22)
+\beta: x \mapsto 2x.  (\infty) (0) (1, 2, 4, 8, 16, 9, 18, 13, 3, 6, 12) (5, 10, 20, 17, 11, 22, 21, 19, 15, 7, 14)
+\gamma: x \mapsto -1/x.  (0 \infty) (1 22) (2 11) (3 15) (4 17) (5 9) (6 19) (7 13) (8 20) (10 16) (12 21) (14 18)
+\delta: x \mapsto x^3/9 on Q, and x \mapsto 9x^3 on \Omega\Q.  (\infty) (0) (1 18 4 2 6) (3) (5 21 20 10 7) (8 16 13 9 12) (11 19 22 14 17) (15)
+PGL_2(23) is generated by \alpha, \beta, \gamma, and acts 3-transitively on \Omega, preserving the code.
+
+Conway: 5-transitivity by direct calcluation.
+
+Alternative constructions: 
+
+
+
+
+Aschbacher: 
+
+3. N(A_1^{24}) lattice.
+
+4. Leech lattice
+
+
+
+2. Central extensions
+
+extraspecial groups
+
+double covers of lattices
+
 

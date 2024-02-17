@@ -4,6 +4,7 @@ Part I: Foundational requirements (add as necessary)
 
 Power series:
 For vertex algebras over a commutative ring R, we need power series in an R-module M lying in M[[z_1^{\pm 1}, \ldots, z_n^{\pm 1}]].
+We may be able to make this work with iterated Hahn series.
 For twisted modules, we need fractional powers (only used when suitable fractions and roots of unity lie in R).
 For intertwining operators, we need "arbitrary powers" and logarithms.  Over C, "arbitrary" just means complex.
 
@@ -25,32 +26,41 @@ maybe Lean is not the first place to try.
 
 Part II: Suggestions (may need work)
 
+New method: composition of fields A(x)B(y) lies in HahnSeries where exponents have lex ordering.  We get an automatic R((y))((x)) scalar multiplication action, which lets us expand (x-y)^{-n} A(x)B(y) in the natural domain, i.e., |x|>|y|.
+
+Also, scalar multiplication makes it easy to say that order n locality implies order n+1 locality - just need (x-y) (x-y)^n A(x)B(y) = (x-y)^(n+1) A(x)B(y).  It's extremely cumbersome if we do it in terms of coefficients.
+
+Need: expansions of rational functions like (x-y)^r (x-z)^s (y-z)^t as Hahn series for Matsuo-Nagatomo treatment of Cauchy-Jacobi.
+
 Given an action of an additive monoid G on S, we have an action of the monoid ring of finitely supported maps from G to R.  Note: the coefficients are given by the sum in the formula (a.m)_k = \sum_{ij=k} a_i m_j, and if ij=k for fixed i and infinitely many j, this is infinite!!!  To fix this, we require that for each k \in S, act^{-1}(k) of G \times S has finite fibers over G.  See implementations of Algebra/Lie and Algebra/MonoidAlgebra.  (This may be too general)
 
 Laurent power series - We consider the case where G and S are compatibly ordered. (I think this just means g < h implies g+s < h+s.)  In this case, we define a Laurent series to be a formal series whose support is bounded below in each G-congruence class.  We show that Laurent series are closed under the monoid algebra action.  (We only need ((x^{1/n})) in most cases.)
 
-Say something about different expansions of m(x-y)^{-n} in M((x))((y)) and M((y))((x)), and how the difference is annihilated by (x-y)^n.
-
 Part III: Field calculus
 
-Field with variable z: R-module map from M to M((z)) [Li calls this a weak vertex operator].  This is currently implemented as
+Field with variable z: R-module map from M to M((z)) [Li calls this a weak vertex operator].
+
+Current draft implementation:
+
+abbrev VertexOperator (R : Type*) (V : Type*) [CommRing R] [AddCommGroup V]
+    [Module R V] := V →ₗ[R] LaurentSeries V
+
+but maybe I want to make compositional and scalar infrastructure using the more general:
+
+abbrev HetVertexOperator (Γ : Type*) (R : Type*) (V : Type*) (W : Type*) [PartialOrder Γ]
+[CommRing R] [AddCommGroup V] [Module R V] [AddCommGroup W] [Module R W] := V →ₗ[R] HahnSeries Γ W
+
+Old version:
 
 structure FieldSeries : [Semiring R] [AddCommMonoid V] [Module R V] where
   coef: ℤ → Module.End R V
   truncation : ∀ v, ∃ N, ∀ n, N ≤ n → coef n v = 0.
 
-FieldSeries coerces to (a.coef n v) : V and seems to work well.
-
-Things that are done:
-* R-module structure on FieldSeries
-* n-th products are (mostly) defined - need add and smul.
-* n-th products are fields (done)
-
-More generally, allow things that look like intertwining operators (heterogeneous fields).
+Basic to do:
 
 Define identity field I(z).  
 
--- Define algebra of not-necessarily local fields.  Problem: without locality, the power series made of residue products is not necessarily a field.  What is Kac's definition of field algebra?  Just Y(u_n v,z) = Y(u,z)_n Y(v,z).
+Maybe don't define algebra of not-necessarily local fields.  Problem: without locality, the power series made of residue products is not necessarily a field.  What is Kac's definition of field algebra?  Just Y(u_n v,z) = Y(u,z)_n Y(v,z).
 
 Theorem: \partial^{(k)}A(z)_n B(z) = (-1)^k\binom{n}{k}A(z)_{n-k}B(z)
 
@@ -67,11 +77,12 @@ Cauchy-Jacobi identity - proof in Matsuo-Nagatomo uses expansions of rational fu
 
 Borcherds identity for residue products - follows from Cauchy-Jacobi.
 
-Vertex rng, non-unital vertex alg : Borcherds equivalent to (locality or commutator formula) and (associativity or weak associativity)
+Vertex rng, non-unital vertex alg : Borcherds is equivalent to (locality or commutator formula) and (associativity or weak associativity)
+-- maybe don't make these into a class - just define a notion of state-field correspondence Y, and define and compare properties of it.
 
 Creativity with respect to a vector: A(z) vac has no singular part - preserved under residue products.
 
-Vertex algebra: All Y(u,z) are creative with respect to vac.
+Vertex algebra: extends AddCommGroupWithOne V.  All Y(u,z) are creative with respect to 1, satisfy locality and associativity.
 
 Basic properties with identity, Hasse-Schmidt derivations, translation-equivariance Y(T^(i)u,z) = \partial^{(i)}Y(u,z).
 
@@ -101,7 +112,7 @@ Cofiniteness conditions.  PBW-type bases.
 
 Modules, intertwining operators, abelian intertwining algebra?
 
-Preparation for moonshine: A_1^{24} Niemeier lattice (uses Golay code), Leech lattice, (simplicity of Co_1 needs Frattini argument and analysis of norm 8 frames).  Distinguished S_4 action on N(A_1^{24}) vertex algebra.
+Preparation for moonshine: A_1^{24} Niemeier lattice (uses Golay code), Leech lattice, (simplicity of Co_1 needs analysis of norm 8 frames).  Distinguished S_4 action on N(A_1^{24}) vertex algebra.
 
 Moonshine module (use triality to avoid some twisted operator manipulations - probably can't avoid all when defining multiplication), finiteness and simplicity of monster, no-ghost theorem, monster Lie algebra, complete replicability.
 
@@ -114,6 +125,8 @@ Hauptmodul criteria, monstrous moonshine, generalized moonshine.
 Conformal blocks in genus zero - identification with intertwining operators following Zhu and Arike.
 
 Conformal blocks in higher genus - analysis following damiolini-gibney-tarasca
+
+Moduli of fs log-smooth curves (with branched G-covers and formal coordinates at marked points)
 
 Verlinde formula, Modular tensor structure, regularity of fixed points, cyclic orbifolds.
 

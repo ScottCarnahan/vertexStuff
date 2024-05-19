@@ -2,21 +2,69 @@ Outline for vertex algebras in Lean
 
 Part I: Foundational requirements (add as necessary)
 
-Power series:
-For vertex algebras over a commutative ring R, we need power series in an R-module M lying in M[[z_1^{\pm 1}, \ldots, z_n^{\pm 1}]].
-We may be able to make this work with iterated Hahn series.
-For twisted modules, we need fractional powers (only used when suitable fractions and roots of unity lie in R).
-For intertwining operators, we need "arbitrary powers" and logarithms.  Over C, "arbitrary" just means complex.
-
-Operations:
-For locality, we need multiplication by multivariable polynomials, in particular, (x-y)^N.
-Isolating terms, e.g., y^n coefficient of an element of M[[x,y]][x^{-1}][\log x] as an element of M((x))[\log x]
-Divided-power derivatives: z^{-n-1} coefficient of \partial^{(k)}A(z) is (-1)^k \binom{n}{k} A_{n-k}.
-Pass between End(V)[[z^{\pm 1}]] + bounded-below condition and Hom(V, V((z))), and more generally between Hom(U,V){z} and Hom(U,V{z})
+Required Operations:
+* For locality, we need multiplication by multivariable polynomials, in particular, (x-y)^N.  Also, switching order of variables.
+* Isolating terms, e.g., y^n coefficient of an element of M[[x,y]][x^{-1}][\log x] as an element of M((x))[\log x]
+* Divided-power derivatives: z^{-n-1} coefficient of \partial^{(k)}A(z) is (-1)^k \binom{n}{k} A_{n-k}.
+* Pass between End(V)[[z^{\pm 1}]] + bounded-below condition and Hom(V, V((z))), and more generally between Hom(U,V){z} and Hom(U,V{z})
   (I guess currying is more or less automatic in Lean? Intertwining operators can be types of the form U \to V \to W{z} )
-Composition of fields: Need a common space for comparing A(z)B(w) and B(w)A(z)
-Residue products (do we need this for non-integral values?)
-Some proofs that locality + derivative rule imply Borcherds use Laurent expansions of rational functions in 3 variables.
+* Composition of fields: may need a common space for comparing A(z)B(w) and B(w)A(z)
+* Residue products (do we need this for non-integral values?)
+* Some proofs that locality + derivative rule imply Borcherds use Laurent expansions of rational functions in 3 variables.
+
+Formal power series:
+In the vertex algebra literature, one typically finds spaces of formal power series of the form V[[z_1^{\pm 1}, \ldots, z_n^{\pm 1}]],
+where V is a complex vector space.
+For twisted modules, we also need fractional powers (only used when suitable fractions and roots of unity lie in R).
+For intertwining operators, we need "arbitrary powers" and logarithms.  Over the complex numbers, "arbitrary" just means complex.
+The problem with this approach is that there is then some question of "allowable" manipulations of these series, e.g., when can we
+multiply by an infinite power series of the form (z_1 - z_2)^{-n}?
+
+Possible solution:
+Instead of the full space of formal power series, we consider Hahn series, which are maps from a partially ordered "exponent" set G
+to the coefficient group V, whose support is partially well-ordered.  A subset is partially well-ordered if in any infinite sequence,
+there is a monotone subsequence (or equivalently, a monotone pair).  The partially well-ordered property gives finite antidiagonals
+(when G has an ordered commutative monoid structure), so multiplication is well-defined.  More generally, we can consider Hahn modules
+with exponents in a partially ordered G-set S that has an ordered cancellative action.
+A vertex operator (or field) is then an R-linear map from V to V((z)), and V((z)) is just HahnModule Z R V.
+Composite vertex operators are R-linear maps V to V((x))((y)), which is HahnModule on the lex product.
+Main benefit: spaces like Hom_R(V, V((x))((y))) have a natural R((x))((y)) action, so we can multiply by (x - y) ^ (-n).
+
+Part II: Current status (2024-05-20)
+
+Put in Mathlib so far:
+* Define Hahn modules, with action of Hahn series.
+* When G and G' are posets, we have an isomorphism between (HahnSeries G (HahnSeries G' R)) and (HahnSeries (G x_l G') R).
+* Generalized binomial coefficients, defined using Pochhammer polynomial evaluation.
+* Heterogeneous vertex operators using Hahn modules.
+
+Under PR review:
+* When V is an R-module, (HahnModule G R V) is a (HahnSeries G R)-module
+* Composition of Heterogeneous vertex operators using lex product.
+
+Done but not PR'd
+* Identities relating integer binomial coefficients
+* Hahn series action on heterogeneous vertex operators
+* Define locality using Hahn series
+* Order n locality implies order n+1 locality.
+* Define residue product
+* Nonnegative residue products with identity field vanish.
+* Define Hasse derivatives of vertex operators
+* Define loop Lie algebras and central extensions
+* Borcherds identity in terms of coefficients (very cumbersome) 
+* Relations to commutator formula and associativity (very cumbersome) 
+* Define vertex algebras in terms of Borcherds identity (very cumbersome)
+
+In progress
+* Expansions of integer powers of (x - y) in R((x))((y)) and R((y))((x))
+* Identities relating residue products and Hasse derivatives
+* Parametrize module-split central extensions by Lie algebra cocycles.
+
+May start soon
+* Lattice vertex operators and Fock space.
+* Vertex structure on vacuum modules.
+* Monomial basis of vacuum module (needs PBW)
+* Worldsheet symmetry (Mobius, quasi-conformal, conformal) - this structure needs to be added to modules and homomorphisms.
 
 Cautions:
 log series don't play well with divided power derivatives when ℚ is not contained in the coefficient ring, e.g., \partial^{(2)} (x^a log x) gets a 2 in the denominator.
@@ -24,41 +72,12 @@ This has not been a problem so far, since no one has worked with log intertwinin
 It might be interesting to see what kind of non-semisimple fusion structures exist over finite fields, but
 maybe Lean is not the first place to try.
 
-Part II: Suggestions (may need work)
-
-New method: composition of fields A(x)B(y) lies in HahnSeries where exponents have lex ordering.  We get an automatic R((y))((x)) scalar multiplication action, which lets us expand (x-y)^{-n} A(x)B(y) in the natural domain, i.e., |x|>|y|.
-
-Also, scalar multiplication makes it easy to say that order n locality implies order n+1 locality - just need (x-y) (x-y)^n A(x)B(y) = (x-y)^(n+1) A(x)B(y).  It's extremely cumbersome if we do it in terms of coefficients.
-
 Need: expansions of rational functions like (x-y)^r (x-z)^s (y-z)^t as Hahn series for Matsuo-Nagatomo treatment of Cauchy-Jacobi.
-
-Given an action of an additive monoid G on S, we have an action of the monoid ring of finitely supported maps from G to R.  Note: the coefficients are given by the sum in the formula (a.m)_k = \sum_{ij=k} a_i m_j, and if ij=k for fixed i and infinitely many j, this is infinite!!!  To fix this, we require that for each k \in S, act^{-1}(k) of G \times S has finite fibers over G.  See implementations of Algebra/Lie and Algebra/MonoidAlgebra.  (This may be too general)
-
-Laurent power series - We consider the case where G and S are compatibly ordered. (I think this just means g < h implies g+s < h+s.)  In this case, we define a Laurent series to be a formal series whose support is bounded below in each G-congruence class.  We show that Laurent series are closed under the monoid algebra action.  (We only need ((x^{1/n})) in most cases.)
+This may need as many as 6 different expansions.
 
 Part III: Field calculus
 
-Field with variable z: R-module map from M to M((z)) [Li calls this a weak vertex operator].
-
-Current draft implementation:
-
-abbrev VertexOperator (R : Type*) (V : Type*) [CommRing R] [AddCommGroup V]
-    [Module R V] := V →ₗ[R] LaurentSeries V
-
-but maybe I want to make compositional and scalar infrastructure using the more general:
-
-abbrev HetVertexOperator (Γ : Type*) (R : Type*) (V : Type*) (W : Type*) [PartialOrder Γ]
-[CommRing R] [AddCommGroup V] [Module R V] [AddCommGroup W] [Module R W] := V →ₗ[R] HahnSeries Γ W
-
-Old version:
-
-structure FieldSeries : [Semiring R] [AddCommMonoid V] [Module R V] where
-  coef: ℤ → Module.End R V
-  truncation : ∀ v, ∃ N, ∀ n, N ≤ n → coef n v = 0.
-
 Basic to do:
-
-Define identity field I(z).  
 
 Maybe don't define algebra of not-necessarily local fields.  Problem: without locality, the power series made of residue products is not necessarily a field.  What is Kac's definition of field algebra?  Just Y(u_n v,z) = Y(u,z)_n Y(v,z).
 
@@ -69,7 +88,7 @@ Theorem: \partial^{(k)}(A(z)_nB(z)) = \sum \partial^{(i)}A(z)_n\partial^{(k-i)}B
 Theorem: A(z)_nI(z) = \partial^{(-n-1)}A(z) for n < 0 and 0 for n \geq 0.  I(z)_nA(z) = \delta_{n,-1}A(z).
 
 Locality: Compare (z-w)^N A(z)B(w) with (z-w)^N B(w)A(z).
-Make a map "multiplication by z-w", and consider its "eventual kernel".
+Make a map "multiplication by z-w", and consider its "eventual kernel"?
 
 Operator product expansion.
 
@@ -80,7 +99,7 @@ Borcherds identity for residue products - follows from Cauchy-Jacobi.
 Vertex rng, non-unital vertex alg : Borcherds is equivalent to (locality or commutator formula) and (associativity or weak associativity)
 -- maybe don't make these into a class - just define a notion of state-field correspondence Y, and define and compare properties of it.
 
-Creativity with respect to a vector: A(z) vac has no singular part - preserved under residue products.
+Creativity with respect to a vector: A(z) 1 has no singular part.  This property is preserved under residue products.
 
 Vertex algebra: extends AddCommGroupWithOne V.  All Y(u,z) are creative with respect to 1, satisfy locality and associativity.
 
@@ -102,7 +121,7 @@ Commutative rings with derivation are the same as commutative vertex algebras.  
 
 Lie algebra structure on V_1/TV_0, special: tensoring with C[z,z^{-1}] to get Lie algebra of coefficients.  Enveloping topological associative algebra.
 
-Standard examples: Heisenberg, Lattice, Affine - Heisenberg and affine need a treatment of fields from loop Lie algebras and induced modules.  Lattices need a theory of double covers, and possibly intertwining operators (do we want a construction of simple current extensions?)
+Standard examples: Heisenberg, Lattice, Affine - Heisenberg and affine need a treatment of fields from loop Lie algebras and induced modules.  Lattices need a theory of lattice double covers, and possibly intertwining operators (do we want a construction of simple current extensions?)
 
 Virasoro, conformal structure, Segal-Sugawara.
 
@@ -112,24 +131,24 @@ Cofiniteness conditions.  PBW-type bases.
 
 Modules, intertwining operators, abelian intertwining algebra?
 
-Preparation for moonshine: A_1^{24} Niemeier lattice (uses Golay code), Leech lattice, (simplicity of Co_1 needs analysis of norm 8 frames).  Distinguished S_4 action on N(A_1^{24}) vertex algebra.
+Preparation for moonshine: A_1^{24} Niemeier lattice (uses Golay-24 code), Leech lattice, (simplicity of Co_1 needs analysis of norm 8 frames).  Distinguished S_4 action on N(A_1^{24}) vertex algebra.
 
 Moonshine module (use triality to avoid some twisted operator manipulations - probably can't avoid all when defining multiplication), finiteness and simplicity of monster, no-ghost theorem, monster Lie algebra, complete replicability.
 
-Ising, Miyamoto involutions.
+Ising VOA, Miyamoto involutions (needs 2 to be invertible).
 
 Complex-analytic properties - differential equations following Huang and Miyamoto, associativity of C_1 fusion, Modularity following Zhu, DLM, Pseudo-trace properties of Miyamoto.
 
-Hauptmodul criteria, monstrous moonshine, generalized moonshine.
+Hauptmodul criteria (Cummins-Gannon), monstrous moonshine, generalized moonshine.
 
 Conformal blocks in genus zero - identification with intertwining operators following Zhu and Arike.
 
-Conformal blocks in higher genus - analysis following damiolini-gibney-tarasca
+Conformal blocks in higher genus - analysis following Damiolini-Gibney-Tarasca
 
 Moduli of fs log-smooth curves (with branched G-covers and formal coordinates at marked points)
 
 Verlinde formula, Modular tensor structure, regularity of fixed points, cyclic orbifolds.
 
-Self-dual integral form of moonshine.
+Self-dual integral form of moonshine (needs some understanding of maximal subgroups of monster).
 
 W-algebras?  Geometric Langlands questions?

@@ -30,20 +30,20 @@ A vertex operator (or field) is then an R-linear map from V to V((z)), and V((z)
 Composite vertex operators are R-linear maps V to V((x))((y)), which is HahnModule on the lex product.
 Main benefit: spaces like Hom_R(V, V((x))((y))) have a natural R((x))((y)) action, so we can multiply by (x - y) ^ (-n).
 
-Part II: Current status (2024-05-20)
+Part II: Current status (2024-07-17)
 
 Put in Mathlib so far:
 * Define Hahn modules, with action of Hahn series.
 * When G and G' are posets, we have an isomorphism between (HahnSeries G (HahnSeries G' R)) and (HahnSeries (G x_l G') R).
 * Generalized binomial coefficients, defined using Pochhammer polynomial evaluation.
+* Identities relating general binomial coefficients
 * Heterogeneous vertex operators using Hahn modules.
 
 Under PR review:
-* When V is an R-module, (HahnModule G R V) is a (HahnSeries G R)-module
+* When V is an R-module and H has ordered cancellative vector addition from G, then (HahnModule H R V) is a (HahnSeries G R)-module
 * Composition of Heterogeneous vertex operators using lex product.
 
 Done but not PR'd
-* Identities relating integer binomial coefficients
 * Hahn series action on heterogeneous vertex operators
 * Define locality using Hahn series
 * Order n locality implies order n+1 locality.
@@ -54,9 +54,9 @@ Done but not PR'd
 * Borcherds identity in terms of coefficients (very cumbersome) 
 * Relations to commutator formula and associativity (very cumbersome) 
 * Define vertex algebras in terms of Borcherds identity (very cumbersome)
+* Expansions of integer powers of (x - y) in R((x))((y)) and R((y))((x))
 
 In progress
-* Expansions of integer powers of (x - y) in R((x))((y)) and R((y))((x))
 * Identities relating residue products and Hasse derivatives
 * Parametrize module-split central extensions by Lie algebra cocycles.
 
